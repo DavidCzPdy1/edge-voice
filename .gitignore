@@ -1,0 +1,16 @@
+*.log
+*.pid
+*.DS_Store
+.vscode/
+yarn.lock
+
+.replit
+replit.nix
+
+node_modules/
+
+.env
+package-lock.json
+
+config.json
+
