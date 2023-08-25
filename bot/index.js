@@ -11,6 +11,11 @@ require('./utils/functions')
 let config = fs.readdirSync(path.join(__dirname, '../')).filter(n => n == 'config.json').length
 if (!config) fs.writeFile(path.join(__dirname, '../config.json'),  JSON.stringify({}, null, 4), 'utf-8', data => {})
 
+if (!fs.existsSync(path.join(__dirname,'./songs'))) {
+    fs.mkdirSync(path.join(__dirname,'./songs'), { recursive: true })
+    fs.writeFile(path.join(__dirname, './songs/list.json'),  JSON.stringify({count: 0, list: []}, null, 4), 'utf-8', data => {})
+}
+
 delay(100).then(async () => {
     const edge = require('./Edge')
     global.edge = edge

@@ -2,12 +2,15 @@
 const fs = require('fs');
 const path = require('path');
 const { PermissionsBitField } = require('discord.js')
+const { parseFile } = require('music-metadata');
 class Config {
   constructor() {
 
     this.config_start = true
     this.readConfig()
     fs.watchFile(path.resolve(__dirname, '../../config.json'), () => this.readConfig());
+
+    this.readSongs()
 
   }
 
@@ -102,6 +105,47 @@ class Config {
     await console.error(message).catch(e => { console.warn(e); process.exit() })
     global.shuting = false
     process.exit()
+  }
+
+  async readSongs() {
+
+    let list = {count: 0, list: [], playlists: []}
+    let albums = fs.readdirSync(path.join(__dirname, '../songs')).filter(n => !n.endsWith('.json') && n.toLowerCase() !== '.dc_store')
+
+    for (let songs of albums) {
+      let album = songs.includes('.') ? '' : songs + '/'
+      if (songs.includes('.')) songs = [songs]
+      else {
+        list.playlists.push(songs)
+        songs = fs.readdirSync(path.join(__dirname, '../songs/'+songs))
+      }
+      
+      for (let song of songs) {
+        if (!song.endsWith('.mp3') && !song.endsWith('.m4a')) continue;
+        let cesta = path.join(__dirname, `../songs/${album}${song}`)
+        let data = await parseFile(cesta)
+
+        
+  
+        let info = {
+          name: data.common?.title ||  song,
+          sourceName: song,
+          file: `songs/${album}${song}`,
+          artists: data.common?.artists || [],
+          artist: data.common?.artist,
+          album: data.common?.album,
+          duration: data.format?.duration,
+
+          group: album.endsWith('/') ? album.replaceAll('/', '') : 'mix'
+        }
+  
+        list.list.push(info)
+        list.count ++
+      }
+    }
+    
+    
+    fs.writeFile(path.resolve(__dirname, '../songs/list.json'), JSON.stringify(list, null, 4), 'utf8', data =>{})
   }
 
 }

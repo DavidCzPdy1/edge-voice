@@ -14,6 +14,7 @@ class UHGDevs extends CommandsHandler {
     super()
 
     this.sendDm = {}
+    this.playlists = {}
   }
   async appStart() {
     this.discord = new DiscordHandler(this)

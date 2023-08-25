@@ -15,14 +15,18 @@ module.exports = {
       let queue = player.queues.cache.get(interaction.guild.id)
       if (!queue) return interaction.editReply({ content: 'Nenašel jsem queue!'})
 
-      if (queue.isEmpty() || !queue.currentTrack) return interaction.editReply({ content: 'V queue nic není' })
+      if (queue.isEmpty() && !queue.currentTrack) return interaction.editReply({ content: 'V queue nic není' })
 
       let embed = { title: 'Queue statistiky', fields: [], color: 756367}
-  
-      embed.fields.push({ name: 'Currently Playing', value: `[${queue.currentTrack.title}](${queue.currentTrack.url})` })
+      embed.fields.push({ name: 'Currently Playing', value: queue.currentTrack.title.startsWith('https://') ? `[${queue.currentTrack.title}](${queue.currentTrack.url})` : queue.currentTrack.title })
       embed.fields.push({ name: 'Progress', value: queue.node.createProgressBar() })
   
-      let songs = queue.tracks.toArray().map(t => `[${t.title}](${t.url})`).join('\n')
+      let songs = queue.tracks.toArray().map(t => t.title.startsWith('https://') ? `[${t.title}](${t.url})` : t.title)
+      if (songs.length > 10) {
+        let count = songs.length - 10
+        songs = songs.slice(0, 10).join('\n')
+        songs = songs + `\n*+ ${count} další${count > 4 ? 'ch' : ''}...*`
+      } else songs = songs.join('\n')
       
       embed.fields.push({name: 'Songs', value: songs, inline: false})
       return interaction.editReply({ embeds: [embed]})
