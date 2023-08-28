@@ -13,7 +13,7 @@ if (!config) fs.writeFile(path.join(__dirname, '../config.json'),  JSON.stringif
 
 if (!fs.existsSync(path.join(__dirname,'./songs'))) {
     fs.mkdirSync(path.join(__dirname,'./songs'), { recursive: true })
-    fs.writeFile(path.join(__dirname, './songs/list.json'),  JSON.stringify({count: 0, list: []}, null, 4), 'utf-8', data => {})
+    fs.writeFile(path.join(__dirname, './songs/list.json'),  JSON.stringify({count: 0, list: [], playlists: []}, null, 4), 'utf-8', data => {})
 }
 
 delay(100).then(async () => {

@@ -64,7 +64,7 @@ module.exports = {
       let focused = interaction.options.getFocused()
       let skip = queue?.tracks.at(track);
       if (!Number(focused) && focused.length) {
-        track = queue.tracks.find(n => n.title.toLowerCase().includes(focused?.trim()?.toLowerCase()) || n.description?.toLowerCase()?.replaceAll(' ','')?.trim().includes(focused?.trim()?.replaceAll(' ','')?.toLowerCase()))
+        track = queue.tracks.find(n => n.title.toLowerCase().includes(focused?.trim()?.toLowerCase()) || n.description?.toLowerCase()?.replaceAll(' ','')?.trim().includes(focused?.replaceAll(' ','')?.toLowerCase()?.trim()))
         if (track) {
           skip = track;
           track = String(queue?.node.getTrackPosition(skip) + 1)

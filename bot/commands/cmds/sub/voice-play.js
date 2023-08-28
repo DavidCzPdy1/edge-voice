@@ -103,7 +103,7 @@ module.exports = {
       let results;
 
       if (!query) results = []
-      else if (options == 'files' || !options) results = JSON.parse(fs.readFileSync(path.resolve(__dirname, '../../../songs/list.json'), 'utf8')).list.map(n => ({name: n.name, value: 'LF➜' + n.file, album: n.album, authors: n.authors}))
+      else if (options == 'files' || !options) results = JSON.parse(fs.readFileSync(path.resolve(__dirname, '../../../songs/list.json'), 'utf8')).list.map(n => ({name: n.name, value: 'LF➜' + n.file, album: n.album, authors: n.authors, special: [n.sourceName.split('.')[0], n.name, n.artist].filter(n => n).join(' | ')?.replaceAll(' ', '').toLowerCase()}))
       else {
         let searchEngine = options && !(options === 'all') ? `ext:${Extractors[options].identifier}` : 'auto'
         let player = useMainPlayer();
@@ -117,7 +117,7 @@ module.exports = {
       results = results.filter(n => n.value.length < 100)
       
       let focused = interaction.options.getFocused()
-      let z = results.filter(n => n.name.toLowerCase().includes(focused.toLowerCase()) || n.album?.toLowerCase().includes(focused.toLowerCase()) || n.authors?.some(a => a?.toLowerCase().includes(focused.toLowerCase())) || n.value.includes(focused)).slice(0, 25)
+      let z = results.filter(n => n.name.toLowerCase().includes(focused.toLowerCase()) || n.album?.toLowerCase().includes(focused.toLowerCase()) || n.authors?.some(a => a?.toLowerCase().includes(focused.toLowerCase())) || n.value?.toLowerCase().includes(focused.toLowerCase()) || n.special?.includes(focused.replaceAll(' ', '').trim()?.toLowerCase())).slice(0, 25)
       return interaction.respond(z.length ? z : [{ name: 'Rádio 7', value: 'https://icecast8.play.cz/radio7-128.mp3' }, { name: 'MixCeske Playlist', value: 'PL➜MixCeske' }, { name: 'Y&F Playlist', value: 'PL➜Y&F' }, { name: 'All Songs', value: 'PL➜all' }])
     }
 }
